@@ -1,5 +1,6 @@
 #include "gfx.h"
 #include "dpad.h"
+#include "cswap.h"
 
 extern uint8_t CFG_DISPLAY_DPAD;
 
@@ -37,6 +38,15 @@ void handle_dpad() {
         if ((pad_pressed & DPAD_D) && CAN_USE_OCARINA){
             z64_usebutton(&z64_game,&z64_link,z64_file.items[0x07], 2);
         }
+        if (pad_pressed & DPAD_U) {
+            uint16_t saved_set = cswap_get_saved_set();
+            uint16_t active_set = cswap_get_active_set();
+            if (active_set != saved_set) {
+                cswap_set_saved_set(active_set);
+                cswap_set_active_set(saved_set);
+                z64_playsfx(0x4808, (z64_xyzf_t*)0x80104394, 0x04, (float*)0x801043A0, (float*)0x801043A0, (float*)0x801043A8);
+            }
+        }
     }
 }
 void draw_dpad() {
@@ -73,6 +83,10 @@ void draw_dpad() {
             else {
                 sprite_draw(db, &items_sprite, 0, 285, 66, 12, 12);
             }
+        }
+        if (cswap_get_active_set() != cswap_get_saved_set()) {
+            sprite_load(db, &cswap_sprite, 0, 1);
+            sprite_draw(db, &cswap_sprite, 0, 273, 53, 12, 12);
         }
         if (z64_file.items[0x07] != -1){
             if(alpha==0xFF && !CAN_USE_OCARINA) gDPSetPrimColor(db->p++, 0, 0, 0xFF, 0xFF, 0xFF, 0x46);

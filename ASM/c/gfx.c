@@ -5,8 +5,10 @@
 
 extern char FONT_TEXTURE;
 extern char DPAD_TEXTURE;
+extern char CSWAP_TEXTURE;
 #define font_texture_raw ((uint8_t *)&FONT_TEXTURE)
 #define dpad_texture_raw ((uint8_t *)&DPAD_TEXTURE)
+#define cswap_texture_raw ((uint8_t *)&CSWAP_TEXTURE)
 
 Gfx setup_db[] =
 {
@@ -57,6 +59,11 @@ sprite_t dpad_sprite = {
     NULL, 32, 32, 1,
     G_IM_FMT_IA, G_IM_SIZ_16b, 2
 };  
+
+sprite_t cswap_sprite = {
+    NULL, 32, 32, 1,
+    G_IM_FMT_RGBA, G_IM_SIZ_32b, 4
+};
 
 int sprite_bytes_per_tile(sprite_t *sprite) {
     return sprite->tile_w * sprite->tile_h * sprite->bytes_per_texel;
@@ -116,6 +123,7 @@ void gfx_init() {
     items_sprite.buf = icon_item_static.buf;
     quest_items_sprite.buf = icon_item_24_static.buf;
     dpad_sprite.buf = dpad_texture_raw;
+    cswap_sprite.buf = cswap_texture_raw;
 
     int font_bytes = sprite_bytes(&font_sprite);
     font_sprite.buf = heap_alloc(font_bytes);
